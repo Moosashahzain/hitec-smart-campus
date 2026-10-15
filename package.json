@@ -10,7 +10,7 @@
     "nodemailer": "^6.10.1",
     "uuid": "^11.1.0"
   },
-  "description": "HITEC Smart Campus \u2014 full-stack college management system (proposed student project, not officially endorsed by HITEC)",
+  "description": "HITEC Smart Campus — full-stack college management system (proposed student project, not officially endorsed by HITEC)",
   "license": "UNLICENSED",
   "main": "src/app.js",
   "name": "hitec-smart-campus",
@@ -18,8 +18,11 @@
     "dev": "node --watch src/app.js",
     "migrate": "node scripts/migrate.js",
     "seed": "node scripts/seed.js",
-    "start": "node src/app.js",
+    "start": "npm run migrate && npm run seed && node src/app.js",
     "test": "node tests/run.js"
+  },
+  "optionalDependencies": {
+    "better-sqlite3": "^11.10.0"
   },
   "version": "0.1.0"
 }
