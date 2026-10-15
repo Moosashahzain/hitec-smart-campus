@@ -1,16 +1,38 @@
-// Shared SQLite connection via Node's built-in node:sqlite (no native deps).
-// WAL mode for concurrent reads.
+// Shared SQLite connection.
+// Primary: Node's built-in node:sqlite (Node >= 22.5, zero native deps).
+// Fallback: better-sqlite3 (prebuilt binaries, for hosts running older Node,
+// e.g. free-tier containers). Both expose the same sync API surface we use
+// (exec / prepare().run().get().all() / close), so the rest of the app is
+// driver-agnostic.
 const path = require('path');
 const fs = require('fs');
-const { DatabaseSync } = require('node:sqlite');
 
 const DB_PATH = process.env.DB_PATH || path.join(__dirname, '..', '..', 'data', 'hitec.db');
 fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
 
-const db = new DatabaseSync(DB_PATH);
+let db;
+let DRIVER = 'node:sqlite';
+try {
+  const { DatabaseSync } = require('node:sqlite');
+  db = new DatabaseSync(DB_PATH);
+} catch (e) {
+  DRIVER = 'better-sqlite3';
+  try {
+    const Database = require('better-sqlite3');
+    db = new Database(DB_PATH);
+  } catch (e2) {
+    console.error(
+      '[db] No SQLite driver available: node:sqlite needs Node >= 22.5, ' +
+      'and better-sqlite3 is not installed. Run `npm install` (it is an ' +
+      'optional dependency) or upgrade Node.'
+    );
+    throw e2;
+  }
+}
+console.log(`[db] driver=${DRIVER} path=${DB_PATH}`);
 db.exec('PRAGMA journal_mode = WAL;');
 
-// Synchronous transaction helper (node:sqlite has no built-in wrapper)
+// Synchronous transaction helper (neither driver exposes a wrapper we use)
 function transaction(fn) {
   return function (...args) {
     db.exec('BEGIN');
@@ -34,4 +56,4 @@ function nowK() {
   return new Date().toISOString();
 }
 
-module.exports = { db, DB_PATH, todayK, nowK, transaction };
+module.exports = { db, DB_PATH, DRIVER, todayK, nowK, transaction };
