@@ -1,0 +1,10 @@
+# dependencies
+node_modules/
+# secrets — never commit
+.env
+# runtime database + backups — never commit (seed recreates demo data)
+data/
+backup/
+# OS / editor
+.DS_Store
+*.log

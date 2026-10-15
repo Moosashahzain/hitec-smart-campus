@@ -1,0 +1,25 @@
+{
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "csv-parse": "^5.6.0",
+    "csv-stringify": "^6.5.2",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "express-session": "^1.18.1",
+    "helmet": "^8.0.0",
+    "nodemailer": "^6.10.1",
+    "uuid": "^11.1.0"
+  },
+  "description": "HITEC Smart Campus \u2014 full-stack college management system (proposed student project, not officially endorsed by HITEC)",
+  "license": "UNLICENSED",
+  "main": "src/app.js",
+  "name": "hitec-smart-campus",
+  "scripts": {
+    "dev": "node --watch src/app.js",
+    "migrate": "node scripts/migrate.js",
+    "seed": "node scripts/seed.js",
+    "start": "node src/app.js",
+    "test": "node tests/run.js"
+  },
+  "version": "0.1.0"
+}

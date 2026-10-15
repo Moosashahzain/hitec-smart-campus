@@ -1,0 +1,31 @@
+# Render Blueprint — one-click deploy for HITEC Smart Campus.
+# In Render: New → Blueprint → connect the repo. Everything below is preconfigured.
+services:
+  - type: web
+    name: hitec-smart-campus
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    # migrate creates tables; seed loads fictional demo data (skip seed for real data)
+    startCommand: npm run migrate && npm run seed && npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: COOKIE_SECURE
+        value: 1
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: APP_URL
+        value: https://hitec-smart-campus.onrender.com
+      # Email (Brevo free tier): fill these in Render dashboard → Environment
+      - key: SMTP_HOST
+        value: smtp-relay.brevo.com
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: SMTP_FROM
+        sync: false
