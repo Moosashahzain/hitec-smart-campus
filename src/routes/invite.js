@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const { db } = require('../db');
 const { tokenHash } = require('../lib/provision');
 const { audit } = require('./auth');
+const { publicShell } = require('../lib/layout');
 
 const router = express.Router();
 
@@ -12,15 +13,19 @@ router.get('/invite/:token', (req, res) => {
     WHERE i.token_hash=? AND i.used_at IS NULL AND i.expires_at > datetime('now')`)
     .get(tokenHash(req.params.token));
   if (!inv) return res.status(400).send('Invalid or expired invitation link.');
-  res.send(`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Set up your account</title><style>
-body{font-family:system-ui;background:#E9F3FA;display:flex;min-height:100vh;align-items:center;justify-content:center;margin:0}
-.card{background:#fff;padding:2rem;border-radius:14px;width:min(380px,92%)}
-input{width:100%;padding:.65rem;border:1px solid #c9d4e2;border-radius:8px;box-sizing:border-box}
-button{width:100%;margin-top:1rem;background:#0A5C99;color:#fff;border:0;padding:.75rem;border-radius:8px;cursor:pointer}</style></head>
-<body><div class="card"><h3>Welcome!</h3><p>Account <b>${inv.login}</b> — choose your password (min 8 characters).</p>
-<form method="post"><label>New password<input type="password" name="password" required minlength="8"></label><button>Activate account</button></form>
-<p style="font-size:.75rem;color:#8a97a8">Student project proposal — not officially endorsed by HITEC Schools &amp; Colleges.</p></div></body></html>`);
+  const body = `<section class="section" style="padding-top:7.5rem;min-height:100svh;display:flex;align-items:center"><div class="wrap" style="width:100%">
+  <div class="split reveal in" style="max-width:920px;margin:0 auto">
+    <div class="split-media"><img src="/media/campus.webp" alt=""><div class="veil"></div>
+      <div class="cap"><h3>You're invited 🎉</h3><p>Join the HITEC Smart Campus demo.</p></div></div>
+    <div class="split-body">
+      <h1 style="margin:0 0 .3rem;font-size:1.6rem">Welcome!</h1>
+      <p style="color:var(--muted)">Account <b>${inv.login}</b> — choose your password (min 8 characters).</p>
+      <form method="post"><div class="field"><label>New password<input type="password" name="password" required minlength="8" placeholder="••••••••"></label></div>
+      <button class="btn gold btn-block">Activate account →</button></form>
+      <div class="disclaimer">Student project proposal — not officially endorsed by HITEC Schools &amp; Colleges.</div>
+    </div>
+  </div></div></section>`;
+  res.send(publicShell({ title: 'Set up your account — HITEC Smart Campus', body, active: '' }));
 });
 
 router.post('/invite/:token', (req, res) => {

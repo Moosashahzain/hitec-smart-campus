@@ -7,34 +7,12 @@ const { submitAttendance, requestCorrection, classSummary } = require('../lib/at
 const router = express.Router();
 router.use(requireRole('teacher'));
 
+const { portalShell } = require('../lib/layout');
+const PORTAL_LINKS = [('/teacher', 'Home'), ('/teacher/mark', '✋ Mark attendance'), ('/teacher/corrections', 'Corrections')];
 function layout(title, user, body) {
-  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${title} — Teacher</title><style>
-body{font-family:system-ui;margin:0;background:#E9F3FA;color:#0A5C99}
-.bar{background:#0A5C99;color:#fff;padding:.9rem 1.1rem;display:flex;justify-content:space-between;align-items:center}
-.wrap{max-width:720px;margin:0 auto;padding:1rem}
-.card{background:#fff;border-radius:12px;padding:1rem;margin-bottom:.8rem;box-shadow:0 4px 14px rgba(10,92,153,.07)}
-.btn{display:block;width:100%;background:#0A5C99;color:#fff;border:0;padding:.9rem;border-radius:10px;font-size:1rem;cursor:pointer;text-align:center;text-decoration:none;box-sizing:border-box}
-.btn.gold{background:#FFD21F;color:#0A5C99}
-.stu{display:flex;align-items:center;gap:.7rem;padding:.7rem .2rem;border-bottom:1px solid #e6ecf3}
-.stu .nm{flex:1}.stu .nm small{display:block;color:#8a97a8}
-.seg{display:flex;gap:.3rem}.seg button{border:1px solid #c9d4e2;background:#fff;border-radius:8px;padding:.55rem .6rem;font-size:.8rem;cursor:pointer;min-width:44px;min-height:44px}
-.seg button.on-p{background:#1a7f37;color:#fff;border-color:#1a7f37}
-.seg button.on-a{background:#b3261e;color:#fff;border-color:#b3261e}
-.seg button.on-l{background:#b26a00;color:#fff;border-color:#b26a00}
-.seg button.on-v{background:#5a6b82;color:#fff;border-color:#5a6b82}
-.toolbar{display:flex;gap:.5rem;margin-bottom:.8rem;flex-wrap:wrap}
-.toolbar a{flex:1;text-align:center;background:#fff;border:1px solid #c9d4e2;border-radius:10px;padding:.7rem;text-decoration:none;color:#0A5C99;font-size:.85rem}
-select,input{padding:.6rem;border:1px solid #c9d4e2;border-radius:8px;font-size:.95rem}
-.msg{background:#e7f6ec;border:1px solid #bfe6c9;padding:.7rem;border-radius:8px;margin-bottom:.8rem}
-.err{background:#fde8e8;border:1px solid #f3c2c2;padding:.7rem;border-radius:8px;margin-bottom:.8rem}
-</style></head><body>
-<div class="bar"><strong>Teacher Portal</strong><form method="post" action="/logout"><button style="background:#FFD21F;color:#0A5C99;border:0;padding:.45rem .9rem;border-radius:8px;cursor:pointer">${user.login}</button></form></div>
-<div class="wrap">${body}</div>
-<script>
-function setStatus(btn, val){ const seg = btn.parentElement; seg.querySelectorAll('button').forEach(b=>b.className=''); btn.className='on-'+val[0]; seg.nextElementSibling.value = val; }
-</script></body></html>`;
+  return portalShell({ title, user, links: PORTAL_LINKS, body, home: '/teacher' });
 }
+
 
 function teacherId(req) { return req.session.user.teacher_id; }
 

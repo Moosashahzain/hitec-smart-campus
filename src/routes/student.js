@@ -8,27 +8,12 @@ const router = express.Router();
 router.use(requireRole('student'));
 const sid = (req) => req.session.user.student_id;
 
+const { portalShell } = require('../lib/layout');
+const PORTAL_LINKS = [('/student', 'Home'), ('/student/attendance', 'Attendance'), ('/student/results', 'Results'), ('/student/fines', 'Fines'), ('/student/leave', 'Leave'), ('/student/notices', 'Notices')];
 function layout(title, user, body) {
-  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${title} — Student</title><style>
-body{font-family:system-ui;margin:0;background:#E9F3FA;color:#0A5C99}
-.bar{background:#0A5C99;color:#fff;padding:.9rem 1.1rem;display:flex;justify-content:space-between;align-items:center}
-.wrap{max-width:720px;margin:0 auto;padding:1rem}
-.card{background:#fff;border-radius:12px;padding:1rem;margin-bottom:.8rem;box-shadow:0 4px 14px rgba(10,92,153,.07)}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
-.big{font-size:1.7rem;font-weight:700;color:#0A5C99}
-.btn{display:inline-block;background:#0A5C99;color:#fff;border:0;padding:.6rem 1.1rem;border-radius:9px;cursor:pointer;text-decoration:none;font-size:.9rem}
-.nav{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.8rem}
-.nav a{background:#fff;border:1px solid #c9d4e2;border-radius:9px;padding:.55rem .9rem;text-decoration:none;color:#0A5C99;font-size:.85rem}
-table{width:100%;border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden;font-size:.85rem}
-th,td{padding:.55rem;text-align:left;border-bottom:1px solid #e6ecf3}th{background:#0A5C99;color:#fff}
-input,select,textarea{padding:.55rem;border:1px solid #c9d4e2;border-radius:8px;font-size:.9rem;width:100%;box-sizing:border-box}
-.msg{background:#e7f6ec;border:1px solid #bfe6c9;padding:.7rem;border-radius:8px;margin-bottom:.8rem}
-@media(max-width:560px){.grid{grid-template-columns:1fr}}
-</style></head><body>
-<div class="bar"><strong>Student Portal</strong><form method="post" action="/logout"><button style="background:#FFD21F;color:#0A5C99;border:0;padding:.45rem .9rem;border-radius:8px;cursor:pointer">${user.login}</button></form></div>
-<div class="wrap"><div class="nav"><a href="/student">Home</a><a href="/student/attendance">Attendance</a><a href="/student/results">Results</a><a href="/student/fines">Fines</a><a href="/student/leave">Leave</a><a href="/student/notices">Notices</a></div>${body}</div></body></html>`;
+  return portalShell({ title, user, links: PORTAL_LINKS, body, home: '/student' });
 }
+
 
 router.get('/', (req, res) => {
   const id = sid(req);

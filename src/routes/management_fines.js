@@ -8,23 +8,12 @@ const { audit } = require('./auth');
 const router = express.Router();
 router.use(requireManagement);
 
+const { portalShell } = require('../lib/layout');
+const PORTAL_LINKS = [('/management', '← Dashboard'), ('/management/fines', 'Fines'), ('/management/fines/types', '⚙️ Configure')];
 function layout(title, user, body) {
-  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${title}</title><style>
-body{font-family:system-ui;margin:0;background:#E9F3FA;color:#0A5C99}
-.bar{background:#0A5C99;color:#fff;padding:.9rem 1.2rem}
-.wrap{max-width:1100px;margin:0 auto;padding:1.2rem}
-table{width:100%;border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden;font-size:.86rem}
-th,td{padding:.6rem;text-align:left;border-bottom:1px solid #e6ecf3}th{background:#0A5C99;color:#fff}
-.btn{background:#0A5C99;color:#fff;border:0;padding:.45rem .9rem;border-radius:8px;cursor:pointer;font-size:.82rem;text-decoration:none}
-.btn.gold{background:#FFD21F;color:#0A5C99}.btn.danger{background:#b3261e}.btn.small{padding:.3rem .6rem}
-form.inline{display:inline}input,select{padding:.45rem;border:1px solid #c9d4e2;border-radius:8px;font-size:.85rem}
-.msg{background:#e7f6ec;border:1px solid #bfe6c9;padding:.7rem;border-radius:8px;margin-bottom:1rem;font-size:.88rem}
-.warn{background:#fff4e0;border:1px solid #ecd9a8;padding:.7rem;border-radius:8px;margin-bottom:1rem;font-size:.88rem}
-h2 a{color:#FFD21F;font-size:.85rem}
-</style></head><body><div class="bar"><a href="/management" style="color:#FFD21F;text-decoration:none">← Dashboard</a></div>
-<div class="wrap">${body}</div></body></html>`;
+  return portalShell({ title, user, links: PORTAL_LINKS, body, home: '/management' });
 }
+
 
 // ---------- Fine types (config) ----------
 router.get('/fines/types', (req, res) => {

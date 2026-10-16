@@ -11,27 +11,12 @@ const router = express.Router();
 router.use(requireManagement);
 
 const PAGE = 25;
+const { portalShell } = require('../lib/layout');
+const PORTAL_LINKS = [('/management', 'Dashboard'), ('/management/students', 'Students'), ('/management/teachers', 'Teachers'), ('/management/fines', 'Fines'), ('/management/leaves', 'Leaves'), ('/management/corrections', 'Corrections')];
 function layout(title, user, body) {
-  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${title} — HITEC Smart Campus</title><style>
-body{font-family:system-ui;margin:0;background:#E9F3FA;color:#0A5C99}
-.bar{background:#0A5C99;color:#fff;padding:.9rem 1.2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
-.bar a{color:#FFD21F;text-decoration:none;margin-right:1rem;font-size:.9rem}
-.wrap{max-width:1100px;margin:0 auto;padding:1.2rem}
-table{width:100%;border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden;font-size:.88rem}
-th,td{padding:.6rem .7rem;text-align:left;border-bottom:1px solid #e6ecf3}
-th{background:#0A5C99;color:#fff}.row:hover{background:#f4f7fb}
-.btn{display:inline-block;background:#0A5C99;color:#fff;border:0;padding:.5rem 1rem;border-radius:8px;cursor:pointer;text-decoration:none;font-size:.85rem}
-.btn.gold{background:#FFD21F;color:#0A5C99}.btn.danger{background:#b3261e}.btn.small{padding:.3rem .7rem;font-size:.78rem}
-form.inline{display:inline}.toolbar{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem;align-items:center}
-input,select{padding:.5rem;border:1px solid #c9d4e2;border-radius:8px;font-size:.9rem}
-.msg{background:#e7f6ec;border:1px solid #bfe6c9;padding:.7rem;border-radius:8px;margin-bottom:1rem;font-size:.88rem}
-@media(max-width:640px){table{font-size:.78rem}th,td{padding:.45rem}}
-</style></head><body>
-<div class="bar"><div><a href="/management">Dashboard</a><a href="/management/students">Students</a><a href="/management/teachers">Teachers</a><a href="/management/fines">Fines</a><a href="/management/leaves">Leaves</a><a href="/management/corrections">Corrections</a></div>
-<div><span style="font-size:.85rem">${user.login} (${user.role})</span> <form class="inline" method="post" action="/logout"><button class="btn small">Logout</button></form></div></div>
-<div class="wrap">${body}</div></body></html>`;
+  return portalShell({ title, user, links: PORTAL_LINKS, body, home: '/management' });
 }
+
 
 // ---------- Dashboard ----------
 router.get('/', (req, res) => {
