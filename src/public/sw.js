@@ -1,7 +1,7 @@
 // HITEC Smart Campus service worker — offline shell for public pages.
 // Private portal pages are never cached (they require a live session).
-const CACHE = 'hsc-v1';
-const SHELL = ['/', '/manifest.webmanifest', '/icon-192.png', '/icon-512.png', '/icon.svg'];
+const CACHE = 'hsc-v2';
+const SHELL = ['/', '/app.css', '/app.js', '/manifest.webmanifest', '/icon-192.png', '/icon-512.png', '/logo.png', '/media/campus.webp'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
